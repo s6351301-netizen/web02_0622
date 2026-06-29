@@ -16,9 +16,27 @@
     foreach($posts as $post):
     ?>
     <tr>
-        <td><?= $post['title'] ?></td>
-        <td><?= mb_substr($post['content'],0,30); ?>...</td>
-        <td></td>
+        <td class="post-title"><?= $post['title'] ?></td>
+        <td>
+            <span><?= mb_substr($post['content'],0,30); ?>...</span>
+            <span style="display:none"><?= nl2br($post['content']) ?></span>
+        </td>
+        <td>
+            <?php
+            if(isset($_SESSION['login'])){
+                echo "<a href='javascript:good({$post['id']})'>";
+                $chk=$Log->count(['user'=>$_SESSION['login'],'news'=>$post['id']]);
+                if($chk){
+                    echo "收回讚";
+                }else{
+                    echo "讚";
+                }
+                echo "</a>";
+            }
+
+            ?>
+
+        </td>
     </tr>
     <?php
     endforeach;
@@ -46,3 +64,15 @@ echo "<a href='?do=news&p=$next'> > </a>";
 ?>
 </div>
 </fieldset>
+
+<script>
+$(".post-title").on("click",function(){
+    $(this).next('td').children('span').toggle();
+})
+
+function good(id){
+    $.post("./api/good.php",{id},()=>{
+        location.reload();
+    })
+}
+</script>
