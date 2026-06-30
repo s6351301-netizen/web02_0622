@@ -24,7 +24,25 @@
                     <pre class="ssaa"><?= nl2br($post['content']) ?></pre>
                 </div>
         </td>
-        <td></td>
+        <td>
+            <span class="good-sum"><?= $post['good']; ?></span>
+            個人說    
+            <span class="good"></span>
+            
+            <?php
+            if(isset($_SESSION['login'])){
+                echo "-<a href='#' onclick='good({$post['id']},this)'>";
+                $chk=$Log->count(['user'=>$_SESSION['login'],'news'=>$post['id']]);
+                if($chk){
+                    echo "收回讚";
+                }else{
+                    echo "讚";
+                }
+                echo "</a>";
+            }
+
+            ?>
+        </td>
     </tr>
     <?php
     endforeach;
@@ -70,4 +88,22 @@ $(".alerr").hover(
         $(".alerr").hide();
     }
 )
+
+function good(id,dom){
+    let num=$(dom).parent().find(".good-sum").text()*1;
+    $.post("./api/good.php",{id},()=>{
+        /* switch($(dom).text()){
+            case "讚":
+                $(dom).parent().find(".good-sum").text(num+1)
+                $(dom).text("收回讚")
+            break;
+            case "收回讚":
+                $(dom).parent().find(".good-sum").text(num-1)
+                $(dom).text("讚")
+            break;
+        } */
+
+        location.reload();
+    })
+}
 </script>

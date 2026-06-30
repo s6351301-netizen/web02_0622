@@ -15,3 +15,5 @@ if($chk){
 }
 
 $News->save($post);
+
+
